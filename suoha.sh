@@ -61,7 +61,7 @@ download_xray_cloudflared(){
             exit 1
             ;;
     esac
-    mkdir xray
+    mkdir -p xray
     unzip -d xray xray.zip
     chmod +x cloudflared-linux xray/xray
     rm -rf xray.zip
@@ -76,14 +76,41 @@ generate_config(){
     if [ "$protocol" = "1" ]; then
         cat > xray/config.json <<EOF
 {
-  "inbounds":[{"port":$port,"listen":"localhost","protocol":"vmess","settings":{"clients":[{"id":"$uuid","alterId":0}]},"streamSettings":{"network":"ws","wsSettings":{"path":"$urlpath"}}}],
+  "inbounds":[
+    {
+      "port":$port,
+      "listen":"localhost",
+      "protocol":"vmess",
+      "settings":{
+        "clients":[{"id":"$uuid","alterId":0}]
+      },
+      "streamSettings":{
+        "network":"ws",
+        "wsSettings":{"path":"$urlpath"}
+      }
+    }
+  ],
   "outbounds":[{"protocol":"freedom","settings":{}}]
 }
 EOF
     else
         cat > xray/config.json <<EOF
 {
-  "inbounds":[{"port":$port,"listen":"localhost","protocol":"vless","settings":{"decryption":"none","clients":[{"id":"$uuid"}]},"streamSettings":{"network":"ws","wsSettings":{"path":"$urlpath"}}}],
+  "inbounds":[
+    {
+      "port":$port,
+      "listen":"localhost",
+      "protocol":"vless",
+      "settings":{
+        "decryption":"none",
+        "clients":[{"id":"$uuid"}]
+      },
+      "streamSettings":{
+        "network":"ws",
+        "wsSettings":{"path":"$urlpath"}
+      }
+    }
+  ],
   "outbounds":[{"protocol":"freedom","settings":{}}]
 }
 EOF
@@ -188,17 +215,41 @@ manage_service(){
     esac
 }
 
-# 主菜单
+# 主菜单（保留你原来的欢迎界面和说明）
 main_menu(){
     clear
-    echo "欢迎使用 TT Agro-suoha 一键脚本"
-    echo "1. 梭哈模式（临时Tunnel）"
-    echo "2. 安装服务模式（开机自启）"
-    echo "3. 卸载服务"
-    echo "4. 清理缓存"
-    echo "5. 管理服务"
-    echo "0. 退出"
-    read -p "请选择: " mode
+    echo "       _        _                              _                "
+    echo "      | |      | |       ___   _   _    ___   | |__     ____       "
+    echo "    __| |______| |_     / __| | | | |  / _ \  | |_ \   / _  |   "
+    echo "   |__   _______  _|    \__ \ | |_| | | (_) | | | | | | (_| | "
+    echo "      | |_     | |_     |___/  \___/   \___/  |_| |_|  \____|"
+    echo "       \__|     \__|"
+    echo "                                 "
+    echo -e "\n欢迎使用 TT Agro-suoha 一键梭哈脚本...\n"
+
+    echo "梭哈模式不需要自己提供域名,使用CF ARGO QUICK TUNNEL创建快速临时链接"
+    echo "梭哈模式在重启或者脚本再次运行后临时隧道失效,如果需要使用需要再次运行创建"
+    echo "安装服务模式,需要有CF托管域名,并且需要按照提示手动绑定ARGO隧道固定服务"
+    echo "首次绑定ARGO隧道固定服务后如果不想再次跳转网页绑定"
+    echo "将已经绑定的系统目录下的 /root/.cloudflared 文件夹以及内容"
+    echo "拷贝至新系统下同样的目录,会自动跳过登录验证"
+
+    echo -e "\n基于 Cloudflare Tunnel 的新一代超轻量级穿透工具"
+    echo -e "无需公网IP 无需端口转发 极致隐藏  专为 NAT VPS 打造"
+
+    echo -e "\n注意：梭哈模式重启服务器后 ARGO 临时隧道失效！！！\n"
+
+    echo "TT Cloudflare Tunnel 一键 suoha 脚本,无需公网IP,无需端口转发,Agro隧道"
+    echo
+    echo "1.梭哈模式（无需 cloudflare 域名，重启会失效）"
+    echo "2.安装服务（需要 cloudflare 域名，重启不会失效）"
+    echo "3.卸载服务"
+    echo "4.清空缓存"
+    echo "5.管理服务"
+    echo -e "0.退出脚本\n"
+
+    read -p "请选择模式(默认1): " mode
+    mode=${mode:-1}
 
     case "$mode" in
         1)
@@ -229,7 +280,7 @@ main_menu(){
     esac
 }
 
-# 循环菜单
+# 循环主菜单
 while true; do
     main_menu
     read -p "按回车返回主菜单..."
