@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # TT Agro-suoha (终极优化版)
-# 集成：自动登录流程 + 语法修正 + 进程保护
+# 集成：自动登录流程 + 语法修正 + 进程保护 + 快捷指令 suoha
 set -euo pipefail
+
+# 脚本下载地址 (用于生成快捷指令，请确保此处是您的 GitHub Raw 地址)
+SCRIPT_URL="https://raw.githubusercontent.com/ttttwei/Agro-suoha/main/suoha.sh"
 
 # ---------- 基础函数 ----------
 log() { printf '%s\n' "$*"; }
@@ -12,6 +15,31 @@ cleanup_on_exit() {
     rm -f /root/argo.log /root/xray.zip 2>/dev/null || true
 }
 trap cleanup_on_exit EXIT
+
+# ---------- 自动创建快捷指令 suoha ----------
+create_shortcut() {
+    local target="/usr/bin/suoha"
+    
+    # 如果当前脚本就是快捷指令，则跳过
+    if [ "$0" == "$target" ]; then
+        return
+    fi
+
+    # 尝试安装/更新快捷指令
+    if curl -sL "$SCRIPT_URL" -o "$target"; then
+        chmod +x "$target"
+        log "✅ 快捷指令 'suoha' 已安装/更新！"
+        log "👉 以后在终端输入 suoha 即可随时唤醒本菜单。"
+        sleep 1
+    else
+        # 如果下载失败（比如没网），尝试复制当前文件（如果是本地文件）
+        if [ -f "$0" ]; then
+            cp "$0" "$target"
+            chmod +x "$target"
+            log "✅ 快捷指令 'suoha' 已通过本地文件安装。"
+        fi
+    fi
+}
 
 # ---------- 环境准备 ----------
 # 简单的包管理器检测
@@ -53,6 +81,9 @@ check_depend() {
         $install_cmd "$cmd" >/dev/null 2>&1
     fi
 }
+
+# 初始化安装快捷指令
+create_shortcut
 
 check_depend curl
 check_depend unzip
@@ -327,17 +358,13 @@ EOF
         systemctl enable tt-cloudflared tt-xray >/dev/null 2>&1
         systemctl restart tt-cloudflared tt-xray
     else
-        # Alpine OpenRC 支持 (略简，保持原逻辑)
-        # 此处省略 Alpine 特定配置以保持脚本精简，主要逻辑已通
+        # Alpine OpenRC (保留原逻辑)
         true
     fi
     
-    # 生成管理脚本链接
-    ln -sf "$0" /usr/bin/suoha
-    chmod +x /usr/bin/suoha
-    
     clear
     log "✅ 安装完成！"
+    log "👉 以后您可以随时输入 suoha 来管理服务"
     cat "$v2file"
 }
 
