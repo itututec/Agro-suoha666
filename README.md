@@ -1,11 +1,11 @@
 🌐 Languages:  
 [English](README.md) | [中文说明](README.zh_CN.md)
 
-# Agro-suoha
+# Argo-suoha
 
 > TT Cloudflare Tunnel one-click suoha script — No public IP required | No port forwarding | Argo Tunnel | Supports VMess/VLESS | Automatic domain obfuscation selection
 
-# 🚀 Agro-suoha
+# 🚀 Argo-suoha
 
 > **A new-generation lightweight penetration tool based on Cloudflare Tunnel**
 >
@@ -19,7 +19,7 @@
 ---
 
 ## 📖 Project Introduction
-**Agro-suoha** is a fully automated one-click deployment script based on Cloudflare Tunnel (Argo) technology.
+**Argo-suoha** is a fully automated one-click deployment script based on Cloudflare Tunnel (Argo) technology.
 
 It is designed to solve the problem where machines without public IP, strict firewalls, or NAT environments (such as HAX, IPv6-only VPS) cannot expose services to the public. By establishing an outbound tunnel, it enables secure public access to local services without any port mapping.
 
@@ -88,7 +88,7 @@ bash <(curl -sL suoha.ggff.net | tr -d '\r')
 ```
 **Method 2：GitHub Raw Link (Backup)**
 ```bash
-bash <(curl -sL [https://raw.githubusercontent.com/ttttwei/Agro-suoha/main/suoha.sh](https://raw.githubusercontent.com/ttttwei/Agro-suoha/main/suoha.sh) | tr -d '\r')
+bash <(curl -sL [https://raw.githubusercontent.com/ttttwei/Argo-suoha/main/suoha.sh](https://raw.githubusercontent.com/ttttwei/Argo-suoha/main/suoha.sh) | tr -d '\r')
 ```
 **📌Select mode based on the menu**
 
